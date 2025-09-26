@@ -8,6 +8,8 @@ import CreateAccount from "./components/CreateAccount/CreateAccount";
 import EditUser from "./components/EditUser/EditUser";
 import Homepage from "./components/Homepage/Homepage";
 
+console.log("VITE_BASE_URL from main.tsx:", import.meta.env.VITE_BASE_URL);
+
 const router = createBrowserRouter([
     {
         path: "/login",
