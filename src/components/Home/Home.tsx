@@ -8,11 +8,11 @@ import getAuthToken from "../../util/authToken";
 import getTask from "../../services/task/getTask";
 
 export interface TaskProps {
-    id: number,
-    description: string,
-    done: boolean,
-    authorEmail: string,
-    title: string,
+    id: number;
+    description: string;
+    done: boolean;
+    authorEmail: string;
+    title: string;
 }
 
 const Home = () => {
@@ -28,126 +28,221 @@ const Home = () => {
     useEffect(() => {
         const fetchUser = async () => {
             const token = getAuthToken();
-            if (email){
-                try{
+            if (email) {
+                try {
                     const userResponse = await getUser(email);
-                    if (userResponse.ok && userResponse.data){
+                    if (userResponse.ok && userResponse.data) {
                         setName(userResponse.data.name);
-                    } else{
-                        alert(`Ocorreu um erro ao carregar o usuário, tente novamente!`);
+                    } else {
+                        alert(
+                            `Ocorreu um erro ao carregar o usuário, tente novamente!`,
+                        );
                     }
-                } catch (error){
-                    alert(`Ocorreu um erro ao carregar o usuário, tente novamente! ${error}`);
+                } catch (error) {
+                    alert(
+                        `Ocorreu um erro ao carregar o usuário, tente novamente! ${error}`,
+                    );
                 }
             }
 
-            if (token){
-                try{
+            if (token) {
+                try {
                     const taskResponse = await getTask(email, token);
-                    if (taskResponse.ok && taskResponse.data){
+                    if (taskResponse.ok && taskResponse.data) {
                         setTasks(taskResponse.data);
-                    } else{
-                        alert(`Ocorreu um erro ao carregar as tasks, tente novamente!`);
+                    } else {
+                        alert(
+                            `Ocorreu um erro ao carregar as tasks, tente novamente!`,
+                        );
                     }
-                } catch (error){
-                    alert(`Ocorreu um erro ao carregar as tasks, tente novamente! ${error}`);
+                } catch (error) {
+                    alert(
+                        `Ocorreu um erro ao carregar as tasks, tente novamente! ${error}`,
+                    );
                 }
             }
-        }
+        };
 
         fetchUser();
-    }, [email])
+    }, [email]);
 
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
-    }
+    };
 
-    const handleEdit = () =>{
+    const handleEdit = () => {
         navigate("/edit", { state: { email: email, name: name } });
-    }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = getAuthToken();
         if (!token) {
-            alert("Falha ao autenticar o usuário. Saia da conta e tente novamente.");
+            alert(
+                "Falha ao autenticar o usuário. Saia da conta e tente novamente.",
+            );
             return;
         }
-        if (taskDescriptionInput.current?.value && taskTitleInput.current?.value){
-            const response = await postTask(taskDescriptionInput.current.value, email, taskTitleInput.current.value, token);
-            if (!response.ok){
-                alert(`Houve um erro ao criar a tarefa, tente novamente. ${response.data.error}`);
+        if (
+            taskDescriptionInput.current?.value &&
+            taskTitleInput.current?.value
+        ) {
+            const response = await postTask(
+                taskDescriptionInput.current.value,
+                email,
+                taskTitleInput.current.value,
+                token,
+            );
+            if (!response.ok) {
+                alert(
+                    `Houve um erro ao criar a tarefa, tente novamente. ${response.data.error}`,
+                );
             } else {
-                setTasks(prevTasks => [...prevTasks, response.data]);
+                setTasks((prevTasks) => [...prevTasks, response.data]);
                 setIsTaskCreated(true);
                 setTimeout(() => {
                     setIsTaskCreated(false);
                 }, 3000);
-            }        
+            }
         }
-    }
+    };
 
     const handleTaskDelete = (id: number) => {
-        setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
     };
 
     const handleTaskUpdate = (updatedTask: TaskProps) => {
-        setTasks(prevTasks => prevTasks.map(task => (
-            task.id === updatedTask.id ? updatedTask : task
-        )
-    ));
-    }
+        setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+                task.id === updatedTask.id ? updatedTask : task,
+            ),
+        );
+    };
 
     return (
-    <>
-        <Header/>
-        <nav>
-            <ul className="h-10 flex justify-around lg:justify-between bg-zinc-700">
-                <li className="w-1/2 bg-zinc-700 hover:bg-zinc-600 text-primary lg:w-3/12">
-                    <button onClick={handleEdit} className="text-center w-full h-full">Editar perfil</button>
-                </li>
-                <li className="w-1/2 bg-zinc-700 hover:bg-zinc-600 text-primary lg:w-3/12">
-                    <button onClick={handleLogout} className="text-center w-full h-full">Sair</button>
-                </li>
+        <div className="bg-slate-50 min-h-screen font-roboto text-slate-800">
+            <Header />
+            <nav className="bg-white shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-end items-center h-16">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={handleEdit}
+                                className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+                            >
+                                Editar Perfil
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                className="bg-slate-800 text-primary text-sm font-semibold py-2 px-4 rounded-lg hover:bg-slate-700 transition-colors"
+                            >
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-3xl mx-auto">
+                    <h2 className="text-3xl font-extrabold text-slate-900">
+                        Bem-vindo, {name}.
+                    </h2>
+                    <p className="mt-2 text-lg text-slate-600">
+                        Aqui estão suas tarefas. Adicione, edite e complete-as.
+                    </p>
 
-            </ul>
-        </nav>
-        <main className="font-roboto">
-            <h2 className="m-4 text-xl my-4 font-medium md:text-center">Bem-vindo, {name}.</h2>
-            <p className="text-lg mt-10 mb-6 text-center">Crie novas tarefas: </p>
-            <form onSubmit={handleSubmit} id="task-create" className="flex flex-col w-10/12 mt-5 mx-auto lg:w-1/2 lg:mx-auto lg:border-2 lg:border-slate-500 lg:rounded-md lg:p-5 2xl:w-1/3">
-            <label htmlFor="new-task" className="flex flex-col">
-                    <span>Título da tarefa:</span>
-                    <input ref={taskTitleInput} type="text" id="task-title" className="h-11 border-2 rounded mb-4 px-3" name="task-title" placeholder="Título da tarefa" required/>
-                </label>
-                <label htmlFor="new-task" className="flex flex-col">
-                    <span>Descreva a tarefa:</span>
-                    <input ref={taskDescriptionInput} type="text" id="task-description" className="h-11 border-2 rounded mb-4 px-3" name="task-description" placeholder="Descrição da tarefa" required/>
-                </label>
-                <button type="submit" className="h-11 w-7/12 mx-auto block rounded bg-slate-800 my-2 hover:bg-slate-700 text-primary text-center">Criar nova tarefa</button>
-            </form>
-            
-            {isTaskCreated && <p className="text-center mt-4">Tarefa criada com sucesso!</p>}
+                    <div className="mt-10">
+                        <div className="bg-white p-8 border-2 border-slate-200 rounded-lg shadow-md">
+                            <h3 className="text-xl font-bold text-slate-900">
+                                Criar nova tarefa
+                            </h3>
+                            <form
+                                onSubmit={handleSubmit}
+                                id="task-create"
+                                className="mt-6 space-y-6"
+                            >
+                                <div>
+                                    <label
+                                        htmlFor="task-title"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
+                                        Título da tarefa
+                                    </label>
+                                    <input
+                                        ref={taskTitleInput}
+                                        type="text"
+                                        id="task-title"
+                                        className="mt-1 block w-full px-4 py-2 text-slate-900 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-slate-500 focus:border-slate-500"
+                                        name="task-title"
+                                        placeholder="Ex: Comprar leite"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="task-description"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
+                                        Descreva a tarefa
+                                    </label>
+                                    <input
+                                        ref={taskDescriptionInput}
+                                        type="text"
+                                        id="task-description"
+                                        className="mt-1 block w-full px-4 py-2 text-slate-900 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-slate-500 focus:border-slate-500"
+                                        name="task-description"
+                                        placeholder="Ex: Ir ao mercado e comprar leite integral"
+                                        required
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full flex justify-center text-primary bg-slate-800 font-semibold py-3 px-6 rounded-lg shadow-sm hover:bg-slate-700 transition-colors duration-300"
+                                >
+                                    Criar nova tarefa
+                                </button>
+                            </form>
+                            {isTaskCreated && (
+                                <p className="text-center text-sm text-green-600 mt-4">
+                                    Tarefa criada com sucesso!
+                                </p>
+                            )}
+                        </div>
+                    </div>
 
-            <ul className="p-6">
-                {tasks.map((task) => (
-                    <TaskCard 
-                    key={task.id}
-                    authorEmail={task.authorEmail}
-                    id={task.id}
-                    done={task.done}
-                    title={task.title}
-                    onTaskDeleted={() => handleTaskDelete(task.id)}
-                    onTaskUpdated={handleTaskUpdate}
-                    >
-                    {task.description}
-                    </TaskCard>    
-                ))}
-            </ul>
-        </main>
-    </>
-    )
-}
+                    <div className="mt-12">
+                        <h3 className="text-xl font-bold text-slate-900">
+                            Sua Lista de Tarefas
+                        </h3>
+                        <ul className="mt-6 space-y-4">
+                            {tasks.length > 0 ? (
+                                tasks.map((task) => (
+                                    <TaskCard
+                                        key={task.id}
+                                        authorEmail={task.authorEmail}
+                                        id={task.id}
+                                        done={task.done}
+                                        title={task.title}
+                                        onTaskDeleted={() =>
+                                            handleTaskDelete(task.id)
+                                        }
+                                        onTaskUpdated={handleTaskUpdate}
+                                    >
+                                        {task.description}
+                                    </TaskCard>
+                                ))
+                            ) : (
+                                <p className="text-slate-500">
+                                    Você ainda não tem tarefas. Crie uma acima!
+                                </p>
+                            )}
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+};
 
 export default Home;
