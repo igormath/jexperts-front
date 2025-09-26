@@ -1,4 +1,4 @@
-const baseUrl = process.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL;
 
 async function deleteTask(email: string, id: number, token: string) {
     try {

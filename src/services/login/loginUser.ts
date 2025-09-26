@@ -1,4 +1,4 @@
-const baseUrl = process.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL;
 
 async function loginUser(email: string, password: string) {
     try {
