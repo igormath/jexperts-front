@@ -1,23 +1,25 @@
+const baseUrl = process.env.BASE_URL;
+
 async function deleteUser(email: string, token: string) {
     try {
-        const response = await fetch(`https://jexperts-back.onrender.com/user/${email}`, {
-            method: 'DELETE',
+        const response = await fetch(`${baseUrl}/user/${email}`, {
+            method: "DELETE",
             headers: {
-                'Authorization': `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
             },
         });
         const data = await response.json();
         return {
-            data, 
+            data,
             status: response.status,
-            ok: response.ok
+            ok: response.ok,
         };
     } catch (error) {
         console.error(error);
         return {
             data: null,
             status: 500,
-            ok: false
+            ok: false,
         };
     }
 }

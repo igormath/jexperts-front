@@ -1,10 +1,12 @@
-async function getTask(email: string, token: string){
+const baseUrl = process.env.BASE_URL;
+
+async function getTask(email: string, token: string) {
     try {
-        const response = await fetch(`https://jexperts-back.onrender.com/task/${email}`, {
-            method: 'GET',
+        const response = await fetch(`${baseUrl}/task/${email}`, {
+            method: "GET",
             headers: {
-                'Authorization': `Bearer ${token}`,
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
         const data = await response.json();
         return {

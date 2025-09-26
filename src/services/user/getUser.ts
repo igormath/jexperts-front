@@ -1,6 +1,8 @@
-async function getUser(email: string){
+const baseUrl = process.env.BASE_URL;
+
+async function getUser(email: string) {
     try {
-        const response = await fetch(`https://jexperts-back.onrender.com/user/${email}`);
+        const response = await fetch(`${baseUrl}/user/${email}`);
         const data = await response.json();
         return {
             data,
@@ -17,4 +19,4 @@ async function getUser(email: string){
     }
 }
 
-export {getUser};
+export { getUser };

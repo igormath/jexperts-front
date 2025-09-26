@@ -1,10 +1,12 @@
-async function postUser(name: string, email:string, password: string) {
+const baseUrl = process.env.BASE_URL;
+
+async function postUser(name: string, email: string, password: string) {
     try {
-        const response = await fetch("https://jexperts-back.onrender.com/user", {
-            method: 'POST',
+        const response = await fetch(`${baseUrl}/user`, {
+            method: "POST",
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                Accept: "application/json",
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 email: email,
@@ -16,15 +18,15 @@ async function postUser(name: string, email:string, password: string) {
         return {
             data: data,
             status: response.status,
-            ok: response.ok
+            ok: response.ok,
         };
     } catch (error) {
         console.error(error);
         return {
             data: error,
             status: 500,
-            ok: false
-        }
+            ok: false,
+        };
     }
 }
 

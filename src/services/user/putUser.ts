@@ -1,16 +1,23 @@
-async function putUser(email: string, name: string, password: string, token: string){
-    try{
-        const response = await fetch(`https://jexperts-back.onrender.com/user/${email}`, {
-            method: 'PUT',
+const baseUrl = process.env.BASE_URL;
+
+async function putUser(
+    email: string,
+    name: string,
+    password: string,
+    token: string,
+) {
+    try {
+        const response = await fetch(`${baseUrl}/user/${email}`, {
+            method: "PUT",
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-                "name": name,
-                "password": password,
-            })
+                name: name,
+                password: password,
+            }),
         });
 
         const data = await response.json();
@@ -20,13 +27,13 @@ async function putUser(email: string, name: string, password: string, token: str
             status: response.status,
             ok: response.ok,
         };
-    }catch(error){
+    } catch (error) {
         console.error(error);
         return {
             data: null,
             status: 500,
             ok: false,
-        }
+        };
     }
 }
 
