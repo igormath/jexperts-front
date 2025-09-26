@@ -1,4 +1,4 @@
-const baseUrl = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 async function putTask(
     email: string,
